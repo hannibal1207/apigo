@@ -12,7 +12,7 @@ type UseCase interface {
 	Get(ID int64) (*Beer, error)
 	Store(b *Beer) error
 	Update(b *Beer) error
-	Remove(ID int) error
+	Remove(ID int64) error
 }
 
 type Service struct {
@@ -112,7 +112,7 @@ func (s *Service) Update(b *Beer) error {
 	return nil
 }
 
-func (s *Service) Remove(ID int) error {
+func (s *Service) Remove(ID int64) error {
 	if ID == 0 {
 		return fmt.Errorf("invalid ID")
 	}
