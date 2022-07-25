@@ -2,8 +2,9 @@ package main
 
 import (
 	"Documentos/pos_trybe/go/api_go/apigo/core/beer"
+	"Documentos/pos_trybe/go/api_go/apigo/web/handlers"
+
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -15,7 +16,7 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", "data/berr.db")
+	db, err := sql.Open("sqlite3", "data/beer.db")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,9 +27,7 @@ func main() {
 	n := negroni.New(
 		negroni.NewLogger(),
 	)
-	r.Handle("/v1/beer", n.With(
-		negroni.Wrap(hello(service)),
-	)).Methods("GET", "OPTIONS")
+	handlers.MakeBeerHandlers(r, n, service)
 	http.Handle("/", r)
 
 	srv := &http.Server{
@@ -42,13 +41,4 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func hello(service beer.UseCase) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		books, _ := service.GetAll()
-		for _, b := range books {
-			fmt.Println(b)
-		}
-	})
 }
